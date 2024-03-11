@@ -94,7 +94,7 @@ class AppRoutes {
     GetPage(name: categoryView, page: () => CategoryView()),
     // GetPage(name: topFashionView, page: () => const TopFashionView()),
     GetPage(name: filtersView, page: () => const FiltersView()),
-    GetPage(name: fashionDetailsView, page: () => FashionDetailsView()),
+    // GetPage(name: fashionDetailsView, page: () => FashionDetailsView()),
     GetPage(name: ratingAndReviewsView, page: () => RatingAndReviewsView()),
     GetPage(name: offersView, page: () => OffersView()),
     GetPage(name: wishlistView, page: () => WishlistView()),

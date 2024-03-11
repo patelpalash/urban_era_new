@@ -1,11 +1,15 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:get/get.dart';
 import 'package:shoppers_ecommerce_flutter_ui_kit/controller/bottom_navigation_controller.dart';
 import 'package:shoppers_ecommerce_flutter_ui_kit/controller/dark_mode_controller.dart';
 import 'package:shoppers_ecommerce_flutter_ui_kit/controller/fashion_controller.dart';
+import 'package:shoppers_ecommerce_flutter_ui_kit/controllermy/product_controller.dart';
 import 'package:shoppers_ecommerce_flutter_ui_kit/model/category_model.dart';
+import 'package:shoppers_ecommerce_flutter_ui_kit/model/product_model.dart';
 import 'package:shoppers_ecommerce_flutter_ui_kit/routes/app_routes.dart';
+import 'package:shoppers_ecommerce_flutter_ui_kit/views/category/fashion_details_view.dart';
 import 'package:shoppers_ecommerce_flutter_ui_kit/views/category/widget/categories_bottom_sheet.dart';
 
 import '../../config/colors.dart';
@@ -16,8 +20,12 @@ import '../../config/size.dart';
 import '../../config/text_string.dart';
 
 class TopFashionView extends StatefulWidget {
-  const TopFashionView({Key? key, required Category category})
-      : super(key: key);
+  TopFashionView({
+    Key? key,
+    required this.category,
+  }) : super(key: key);
+
+  final Category category;
 
   @override
   State<TopFashionView> createState() => _TopFashionViewState();
@@ -26,14 +34,24 @@ class TopFashionView extends StatefulWidget {
 class _TopFashionViewState extends State<TopFashionView> {
   FashionController fashionController = Get.put(FashionController());
   DarkModeController darkModeController = Get.put(DarkModeController());
+  Productcontroller productcontroller = Get.put(Productcontroller());
   BottomNavigationController bottomNavigationController =
       Get.put(BottomNavigationController());
 
   late ScrollController scrollController;
+  List<Products> listofproducts = [];
 
   @override
   void initState() {
     super.initState();
+    final cat = widget.category;
+    listofproducts = productcontroller.product
+        .where(
+          (product) => product.category.isEqual(
+            cat.id,
+          ),
+        )
+        .toList();
     scrollController = ScrollController();
     setupScrollListener();
   }
@@ -85,7 +103,7 @@ class _TopFashionViewState extends State<TopFashionView> {
                     flexibleSpace: FlexibleSpaceBar(
                       title: fashionController.showTitle
                           ? Text(
-                              TextString.topFashions,
+                              widget.category.title,
                               style: TextStyle(
                                 fontWeight: FontWeight.w500,
                                 fontFamily: FontFamily.lexendMedium,
@@ -204,8 +222,7 @@ class _TopFashionViewState extends State<TopFashionView> {
                                     crossAxisCount: 2,
                                     mainAxisSpacing: 23,
                                     crossAxisSpacing: 23,
-                                    itemCount:
-                                        fashionController.fashionTitle.length,
+                                    itemCount: listofproducts.length,
                                     itemBuilder: (context, index) {
                                       if (index == 0) {
                                         return Column(
@@ -213,7 +230,7 @@ class _TopFashionViewState extends State<TopFashionView> {
                                               CrossAxisAlignment.start,
                                           children: [
                                             Text(
-                                              TextString.top,
+                                              widget.category.title,
                                               style: TextStyle(
                                                 fontSize: FontSize.heading2,
                                                 fontWeight: FontWeight.w300,
@@ -243,72 +260,113 @@ class _TopFashionViewState extends State<TopFashionView> {
                                           ],
                                         );
                                       } else {
-                                        final imageIndex = index - 1;
-                                        if (imageIndex % 2 == 0) {
-                                          return Transform.translate(
-                                            offset: const Offset(0, 5),
-                                            child: GestureDetector(
-                                              onTap: () {
-                                                Get.toNamed(AppRoutes
-                                                    .fashionDetailsView);
-                                              },
-                                              child: Container(
-                                                width: SizeConfig.width159,
-                                                padding: const EdgeInsets.only(
-                                                  top: SizeConfig.padding12,
-                                                  bottom: SizeConfig.padding16,
-                                                  left: SizeConfig.padding12,
-                                                  right: SizeConfig.padding12,
+                                        return GestureDetector(
+                                          onTap: () {
+                                            Navigator.of(context)
+                                                .push(MaterialPageRoute(
+                                              builder: (context) =>
+                                                  FashionDetailsView(
+                                                product: listofproducts[index],
+                                              ),
+                                            ));
+                                          },
+                                          child: Container(
+                                            width: 159,
+                                            padding: const EdgeInsets.only(
+                                              top: 0,
+                                              bottom: 14,
+                                              left: 15,
+                                              right: 15,
+                                            ),
+                                            decoration: BoxDecoration(
+                                              // color: Colors.grey.shade500,
+                                              color: darkModeController
+                                                      .isLightTheme.value
+                                                  ? ColorsConfig.secondaryColor
+                                                  : ColorsConfig.primaryColor,
+                                              borderRadius:
+                                                  BorderRadius.circular(14),
+                                            ),
+                                            child: Column(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment
+                                                      .spaceBetween,
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: [
+                                                Center(
+                                                  child: Image(
+                                                    image: AssetImage(
+                                                        'assets/admin_site_images/all final images with background removed/${listofproducts[index].img}'),
+                                                    height: 190,
+                                                    width: 190,
+                                                  ),
                                                 ),
-                                                decoration: BoxDecoration(
-                                                  color: darkModeController
-                                                          .isLightTheme.value
-                                                      ? ColorsConfig
-                                                          .secondaryColor
-                                                      : ColorsConfig
-                                                          .primaryColor,
-                                                  borderRadius:
-                                                      BorderRadius.circular(
-                                                          SizeConfig
-                                                              .borderRadius14),
-                                                ),
-                                                child: Column(
-                                                  mainAxisAlignment:
-                                                      MainAxisAlignment
-                                                          .spaceBetween,
+                                                Column(
                                                   crossAxisAlignment:
                                                       CrossAxisAlignment.start,
                                                   children: [
-                                                    Center(
-                                                      child: Image(
-                                                        image: AssetImage(
-                                                            fashionController
-                                                                    .fashionImageList[
-                                                                imageIndex]),
-                                                        width:
-                                                            SizeConfig.width111,
-                                                        height: SizeConfig
-                                                            .height120,
+                                                    Text(
+                                                      maxLines: 2,
+                                                      softWrap: true,
+                                                      overflow:
+                                                          TextOverflow.ellipsis,
+                                                      listofproducts[index]
+                                                          .title,
+                                                      style: TextStyle(
+                                                        fontWeight:
+                                                            FontWeight.w500,
+                                                        fontSize: 15,
+                                                        fontFamily: FontFamily
+                                                            .lexendMedium,
+                                                        color: darkModeController
+                                                                .isLightTheme
+                                                                .value
+                                                            ? ColorsConfig
+                                                                .primaryColor
+                                                            : ColorsConfig
+                                                                .secondaryColor,
                                                       ),
                                                     ),
                                                     const SizedBox(
-                                                      height:
-                                                          SizeConfig.height13,
+                                                      height: 02,
                                                     ),
-                                                    Column(
-                                                      crossAxisAlignment:
-                                                          CrossAxisAlignment
-                                                              .start,
+                                                    Text(
+                                                      maxLines: 1,
+                                                      softWrap: true,
+                                                      overflow:
+                                                          TextOverflow.ellipsis,
+                                                      listofproducts[index]
+                                                          .subtitle,
+                                                      style: TextStyle(
+                                                        fontWeight:
+                                                            FontWeight.w400,
+                                                        fontSize: 12,
+                                                        fontFamily: FontFamily
+                                                            .lexendLight,
+                                                        color: darkModeController
+                                                                .isLightTheme
+                                                                .value
+                                                            ? ColorsConfig
+                                                                .textColor
+                                                            : ColorsConfig
+                                                                .modeInactiveColor,
+                                                      ),
+                                                    ),
+                                                    const SizedBox(
+                                                      height: 10,
+                                                    ),
+                                                    Row(
+                                                      mainAxisAlignment:
+                                                          MainAxisAlignment
+                                                              .spaceBetween,
                                                       children: [
                                                         Text(
-                                                          fashionController
-                                                                  .fashionTitle[
-                                                              imageIndex],
+                                                          ('\u{20B9} ${listofproducts[index].price.toString()}'),
                                                           style: TextStyle(
                                                             fontWeight:
                                                                 FontWeight.w500,
-                                                            fontSize:
-                                                                FontSize.body2,
+                                                            fontSize: 14,
                                                             fontFamily: FontFamily
                                                                 .lexendMedium,
                                                             color: darkModeController
@@ -320,268 +378,47 @@ class _TopFashionViewState extends State<TopFashionView> {
                                                                     .secondaryColor,
                                                           ),
                                                         ),
-                                                        const SizedBox(
-                                                          height: SizeConfig
-                                                              .height02,
-                                                        ),
-                                                        Text(
-                                                          fashionController
-                                                                  .fashionSubtitle[
-                                                              imageIndex],
-                                                          style: TextStyle(
-                                                            fontWeight:
-                                                                FontWeight.w300,
-                                                            fontSize:
-                                                                FontSize.body3,
-                                                            fontFamily:
-                                                                FontFamily
-                                                                    .lexendLight,
-                                                            color: darkModeController
-                                                                    .isLightTheme
-                                                                    .value
-                                                                ? ColorsConfig
-                                                                    .textColor
-                                                                : ColorsConfig
-                                                                    .modeInactiveColor,
-                                                          ),
-                                                        ),
-                                                        const SizedBox(
-                                                          height: SizeConfig
-                                                              .height10,
-                                                        ),
-                                                        Row(
-                                                          mainAxisAlignment:
-                                                              MainAxisAlignment
-                                                                  .spaceBetween,
-                                                          children: [
-                                                            Text(
+                                                        Obx(
+                                                          () => GestureDetector(
+                                                            onTap: () {
                                                               fashionController
-                                                                      .fashionPrice[
-                                                                  imageIndex],
-                                                              style: TextStyle(
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .w500,
-                                                                fontSize:
-                                                                    FontSize
-                                                                        .body2,
-                                                                fontFamily:
-                                                                    FontFamily
-                                                                        .lexendMedium,
-                                                                color: darkModeController
-                                                                        .isLightTheme
+                                                                  .toggleFavorite(
+                                                                      index);
+                                                            },
+                                                            child: Image(
+                                                              image: AssetImage(
+                                                                fashionController
+                                                                        .isFavouriteList[
+                                                                            index]
                                                                         .value
-                                                                    ? ColorsConfig
-                                                                        .primaryColor
-                                                                    : ColorsConfig
-                                                                        .secondaryColor,
-                                                              ),
-                                                            ),
-                                                            Obx(
-                                                              () =>
-                                                                  GestureDetector(
-                                                                onTap: () {
-                                                                  fashionController
-                                                                      .toggleFavorite(
-                                                                          imageIndex);
-                                                                },
-                                                                child: Image(
-                                                                  image:
-                                                                      AssetImage(
-                                                                    fashionController
-                                                                            .isFavouriteList[imageIndex]
+                                                                    ? darkModeController
+                                                                            .isLightTheme
                                                                             .value
-                                                                        ? darkModeController.isLightTheme.value
-                                                                            ? ImageConfig.favourite
-                                                                            : ImageConfig.favouriteUnfill
-                                                                        : darkModeController.isLightTheme.value
-                                                                            ? ImageConfig.likeFill
-                                                                            : ImageConfig.favouriteFill,
-                                                                  ),
-                                                                  width: SizeConfig
-                                                                      .width18,
-                                                                ),
+                                                                        ? ImageConfig
+                                                                            .favourite
+                                                                        : ImageConfig
+                                                                            .favouriteUnfill
+                                                                    : darkModeController
+                                                                            .isLightTheme
+                                                                            .value
+                                                                        ? ImageConfig
+                                                                            .likeFill
+                                                                        : ImageConfig
+                                                                            .favouriteFill,
                                                               ),
+                                                              width: SizeConfig
+                                                                  .width18,
                                                             ),
-                                                          ],
+                                                          ),
                                                         ),
                                                       ],
                                                     ),
                                                   ],
                                                 ),
-                                              ),
+                                              ],
                                             ),
-                                          );
-                                        } else {
-                                          return GestureDetector(
-                                            onTap: () {
-                                              Get.toNamed(
-                                                  AppRoutes.fashionDetailsView);
-                                            },
-                                            child: Container(
-                                              width: SizeConfig.width159,
-                                              padding: const EdgeInsets.only(
-                                                top: SizeConfig.padding12,
-                                                bottom: SizeConfig.padding16,
-                                                left: SizeConfig.padding12,
-                                                right: SizeConfig.padding12,
-                                              ),
-                                              decoration: BoxDecoration(
-                                                color: darkModeController
-                                                        .isLightTheme.value
-                                                    ? ColorsConfig
-                                                        .secondaryColor
-                                                    : ColorsConfig.primaryColor,
-                                                borderRadius:
-                                                    BorderRadius.circular(
-                                                        SizeConfig
-                                                            .borderRadius14),
-                                              ),
-                                              child: Column(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment
-                                                        .spaceBetween,
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.start,
-                                                children: [
-                                                  Center(
-                                                    child: Image(
-                                                      image: AssetImage(
-                                                          fashionController
-                                                                  .fashionImageList[
-                                                              imageIndex]),
-                                                      width:
-                                                          SizeConfig.width111,
-                                                      height:
-                                                          SizeConfig.height120,
-                                                    ),
-                                                  ),
-                                                  const SizedBox(
-                                                    height: SizeConfig.height13,
-                                                  ),
-                                                  Column(
-                                                    crossAxisAlignment:
-                                                        CrossAxisAlignment
-                                                            .start,
-                                                    children: [
-                                                      Text(
-                                                        fashionController
-                                                                .fashionTitle[
-                                                            imageIndex],
-                                                        style: TextStyle(
-                                                          fontWeight:
-                                                              FontWeight.w500,
-                                                          fontSize:
-                                                              FontSize.body2,
-                                                          fontFamily: FontFamily
-                                                              .lexendMedium,
-                                                          color: darkModeController
-                                                                  .isLightTheme
-                                                                  .value
-                                                              ? ColorsConfig
-                                                                  .primaryColor
-                                                              : ColorsConfig
-                                                                  .secondaryColor,
-                                                        ),
-                                                      ),
-                                                      const SizedBox(
-                                                        height:
-                                                            SizeConfig.height02,
-                                                      ),
-                                                      Text(
-                                                        fashionController
-                                                                .fashionSubtitle[
-                                                            imageIndex],
-                                                        style: TextStyle(
-                                                          fontWeight:
-                                                              FontWeight.w300,
-                                                          fontSize:
-                                                              FontSize.body3,
-                                                          fontFamily: FontFamily
-                                                              .lexendLight,
-                                                          color: darkModeController
-                                                                  .isLightTheme
-                                                                  .value
-                                                              ? ColorsConfig
-                                                                  .textColor
-                                                              : ColorsConfig
-                                                                  .modeInactiveColor,
-                                                        ),
-                                                      ),
-                                                      const SizedBox(
-                                                        height:
-                                                            SizeConfig.height10,
-                                                      ),
-                                                      Row(
-                                                        mainAxisAlignment:
-                                                            MainAxisAlignment
-                                                                .spaceBetween,
-                                                        children: [
-                                                          Text(
-                                                            fashionController
-                                                                    .fashionPrice[
-                                                                imageIndex],
-                                                            style: TextStyle(
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .w500,
-                                                              fontSize: FontSize
-                                                                  .body2,
-                                                              fontFamily: FontFamily
-                                                                  .lexendMedium,
-                                                              color: darkModeController
-                                                                      .isLightTheme
-                                                                      .value
-                                                                  ? ColorsConfig
-                                                                      .primaryColor
-                                                                  : ColorsConfig
-                                                                      .secondaryColor,
-                                                            ),
-                                                          ),
-                                                          Obx(
-                                                            () =>
-                                                                GestureDetector(
-                                                              onTap: () {
-                                                                fashionController
-                                                                    .toggleFavorite(
-                                                                        imageIndex);
-                                                              },
-                                                              child: Image(
-                                                                image:
-                                                                    AssetImage(
-                                                                  fashionController
-                                                                          .isFavouriteList[
-                                                                              imageIndex]
-                                                                          .value
-                                                                      ? darkModeController
-                                                                              .isLightTheme
-                                                                              .value
-                                                                          ? ImageConfig
-                                                                              .favourite
-                                                                          : ImageConfig
-                                                                              .favouriteUnfill
-                                                                      : darkModeController
-                                                                              .isLightTheme
-                                                                              .value
-                                                                          ? ImageConfig
-                                                                              .likeFill
-                                                                          : ImageConfig
-                                                                              .favouriteFill,
-                                                                ),
-                                                                width: SizeConfig
-                                                                    .width18,
-                                                              ),
-                                                            ),
-                                                          ),
-                                                        ],
-                                                      ),
-                                                    ],
-                                                  ),
-                                                ],
-                                              ),
-                                            ),
-                                          );
-                                        }
+                                          ),
+                                        );
                                       }
                                     },
                                   ),
@@ -680,3 +517,348 @@ class _TopFashionViewState extends State<TopFashionView> {
         ));
   }
 }
+
+
+
+
+
+
+// else {
+//                                         final imageIndex = index - 1;
+//                                         if (imageIndex % 2 == 0) {
+//                                           return Transform.translate(
+//                                             offset: const Offset(0, 5),
+//                                             child: GestureDetector(
+//                                               onTap: () {
+//                                                 Get.toNamed(AppRoutes
+//                                                     .fashionDetailsView);
+//                                               },
+//                                               child: Container(
+//                                                 width: SizeConfig.width159,
+//                                                 padding: const EdgeInsets.only(
+//                                                   top: SizeConfig.padding12,
+//                                                   bottom: SizeConfig.padding16,
+//                                                   left: SizeConfig.padding12,
+//                                                   right: SizeConfig.padding12,
+//                                                 ),
+//                                                 decoration: BoxDecoration(
+//                                                   color: darkModeController
+//                                                           .isLightTheme.value
+//                                                       ? ColorsConfig
+//                                                           .secondaryColor
+//                                                       : ColorsConfig
+//                                                           .primaryColor,
+//                                                   borderRadius:
+//                                                       BorderRadius.circular(
+//                                                           SizeConfig
+//                                                               .borderRadius14),
+//                                                 ),
+//                                                 child: Column(
+//                                                   mainAxisAlignment:
+//                                                       MainAxisAlignment
+//                                                           .spaceBetween,
+//                                                   crossAxisAlignment:
+//                                                       CrossAxisAlignment.start,
+//                                                   children: [
+//                                                     Center(
+//                                                       child: Image(
+//                                                         image: AssetImage(
+//                                                             'assets/admin_site_images/all final images with background removed/${listofproducts[imageIndex].img}'),
+//                                                         width:
+//                                                             SizeConfig.width111,
+//                                                         height: SizeConfig
+//                                                             .height120,
+//                                                       ),
+//                                                     ),
+//                                                     const SizedBox(
+//                                                       height:
+//                                                           SizeConfig.height13,
+//                                                     ),
+//                                                     Column(
+//                                                       crossAxisAlignment:
+//                                                           CrossAxisAlignment
+//                                                               .start,
+//                                                       children: [
+//                                                         Text(
+//                                                           listofproducts[
+//                                                                   imageIndex]
+//                                                               .title,
+//                                                           style: TextStyle(
+//                                                             fontWeight:
+//                                                                 FontWeight.w500,
+//                                                             fontSize:
+//                                                                 FontSize.body2,
+//                                                             fontFamily: FontFamily
+//                                                                 .lexendMedium,
+//                                                             color: darkModeController
+//                                                                     .isLightTheme
+//                                                                     .value
+//                                                                 ? ColorsConfig
+//                                                                     .primaryColor
+//                                                                 : ColorsConfig
+//                                                                     .secondaryColor,
+//                                                           ),
+//                                                         ),
+//                                                         const SizedBox(
+//                                                           height: SizeConfig
+//                                                               .height02,
+//                                                         ),
+//                                                         Text(
+//                                                           listofproducts[
+//                                                                   imageIndex]
+//                                                               .subtitle,
+//                                                           style: TextStyle(
+//                                                             fontWeight:
+//                                                                 FontWeight.w300,
+//                                                             fontSize:
+//                                                                 FontSize.body3,
+//                                                             fontFamily:
+//                                                                 FontFamily
+//                                                                     .lexendLight,
+//                                                             color: darkModeController
+//                                                                     .isLightTheme
+//                                                                     .value
+//                                                                 ? ColorsConfig
+//                                                                     .textColor
+//                                                                 : ColorsConfig
+//                                                                     .modeInactiveColor,
+//                                                           ),
+//                                                         ),
+//                                                         const SizedBox(
+//                                                           height: SizeConfig
+//                                                               .height10,
+//                                                         ),
+//                                                         Row(
+//                                                           mainAxisAlignment:
+//                                                               MainAxisAlignment
+//                                                                   .spaceBetween,
+//                                                           children: [
+//                                                             Text(
+//                                                               listofproducts[
+//                                                                       imageIndex]
+//                                                                   .price
+//                                                                   .toString(),
+//                                                               style: TextStyle(
+//                                                                 fontWeight:
+//                                                                     FontWeight
+//                                                                         .w500,
+//                                                                 fontSize:
+//                                                                     FontSize
+//                                                                         .body2,
+//                                                                 fontFamily:
+//                                                                     FontFamily
+//                                                                         .lexendMedium,
+//                                                                 color: darkModeController
+//                                                                         .isLightTheme
+//                                                                         .value
+//                                                                     ? ColorsConfig
+//                                                                         .primaryColor
+//                                                                     : ColorsConfig
+//                                                                         .secondaryColor,
+//                                                               ),
+//                                                             ),
+//                                                             Obx(
+//                                                               () =>
+//                                                                   GestureDetector(
+//                                                                 onTap: () {
+//                                                                   fashionController
+//                                                                       .toggleFavorite(
+//                                                                           imageIndex);
+//                                                                 },
+//                                                                 child: Image(
+//                                                                   image:
+//                                                                       AssetImage(
+//                                                                     fashionController
+//                                                                             .isFavouriteList[imageIndex]
+//                                                                             .value
+//                                                                         ? darkModeController.isLightTheme.value
+//                                                                             ? ImageConfig.favourite
+//                                                                             : ImageConfig.favouriteUnfill
+//                                                                         : darkModeController.isLightTheme.value
+//                                                                             ? ImageConfig.likeFill
+//                                                                             : ImageConfig.favouriteFill,
+//                                                                   ),
+//                                                                   width: SizeConfig
+//                                                                       .width18,
+//                                                                 ),
+//                                                               ),
+//                                                             ),
+//                                                           ],
+//                                                         ),
+//                                                       ],
+//                                                     ),
+//                                                   ],
+//                                                 ),
+//                                               ),
+//                                             ),
+//                                           );
+//                                         } else {
+//                                           return GestureDetector(
+//                                             onTap: () {
+//                                               Get.toNamed(
+//                                                   AppRoutes.fashionDetailsView);
+//                                             },
+//                                             child: Container(
+//                                               width: SizeConfig.width159,
+//                                               padding: const EdgeInsets.only(
+//                                                 top: SizeConfig.padding12,
+//                                                 bottom: SizeConfig.padding16,
+//                                                 left: SizeConfig.padding12,
+//                                                 right: SizeConfig.padding12,
+//                                               ),
+//                                               decoration: BoxDecoration(
+//                                                 color: darkModeController
+//                                                         .isLightTheme.value
+//                                                     ? ColorsConfig
+//                                                         .secondaryColor
+//                                                     : ColorsConfig.primaryColor,
+//                                                 borderRadius:
+//                                                     BorderRadius.circular(
+//                                                         SizeConfig
+//                                                             .borderRadius14),
+//                                               ),
+//                                               child: Column(
+//                                                 mainAxisAlignment:
+//                                                     MainAxisAlignment
+//                                                         .spaceBetween,
+//                                                 crossAxisAlignment:
+//                                                     CrossAxisAlignment.start,
+//                                                 children: [
+//                                                   Center(
+//                                                     child: Image(
+//                                                       image: AssetImage(
+//                                                           'assets/admin_site_images/all final images with background removed/${listofproducts[imageIndex].img}'),
+//                                                       width:
+//                                                           SizeConfig.width111,
+//                                                       height:
+//                                                           SizeConfig.height120,
+//                                                     ),
+//                                                   ),
+//                                                   const SizedBox(
+//                                                     height: SizeConfig.height13,
+//                                                   ),
+//                                                   Column(
+//                                                     crossAxisAlignment:
+//                                                         CrossAxisAlignment
+//                                                             .start,
+//                                                     children: [
+//                                                       Text(
+//                                                         listofproducts[
+//                                                                 imageIndex]
+//                                                             .title,
+//                                                         style: TextStyle(
+//                                                           fontWeight:
+//                                                               FontWeight.w500,
+//                                                           fontSize:
+//                                                               FontSize.body2,
+//                                                           fontFamily: FontFamily
+//                                                               .lexendMedium,
+//                                                           color: darkModeController
+//                                                                   .isLightTheme
+//                                                                   .value
+//                                                               ? ColorsConfig
+//                                                                   .primaryColor
+//                                                               : ColorsConfig
+//                                                                   .secondaryColor,
+//                                                         ),
+//                                                       ),
+//                                                       const SizedBox(
+//                                                         height:
+//                                                             SizeConfig.height02,
+//                                                       ),
+//                                                       Text(
+//                                                         listofproducts[
+//                                                                 imageIndex]
+//                                                             .subtitle,
+//                                                         style: TextStyle(
+//                                                           fontWeight:
+//                                                               FontWeight.w300,
+//                                                           fontSize:
+//                                                               FontSize.body3,
+//                                                           fontFamily: FontFamily
+//                                                               .lexendLight,
+//                                                           color: darkModeController
+//                                                                   .isLightTheme
+//                                                                   .value
+//                                                               ? ColorsConfig
+//                                                                   .textColor
+//                                                               : ColorsConfig
+//                                                                   .modeInactiveColor,
+//                                                         ),
+//                                                       ),
+//                                                       const SizedBox(
+//                                                         height:
+//                                                             SizeConfig.height10,
+//                                                       ),
+//                                                       Row(
+//                                                         mainAxisAlignment:
+//                                                             MainAxisAlignment
+//                                                                 .spaceBetween,
+//                                                         children: [
+//                                                           Text(
+//                                                             listofproducts[
+//                                                                     imageIndex]
+//                                                                 .price
+//                                                                 .toString(),
+//                                                             style: TextStyle(
+//                                                               fontWeight:
+//                                                                   FontWeight
+//                                                                       .w500,
+//                                                               fontSize: FontSize
+//                                                                   .body2,
+//                                                               fontFamily: FontFamily
+//                                                                   .lexendMedium,
+//                                                               color: darkModeController
+//                                                                       .isLightTheme
+//                                                                       .value
+//                                                                   ? ColorsConfig
+//                                                                       .primaryColor
+//                                                                   : ColorsConfig
+//                                                                       .secondaryColor,
+//                                                             ),
+//                                                           ),
+//                                                           Obx(
+//                                                             () =>
+//                                                                 GestureDetector(
+//                                                               onTap: () {
+//                                                                 fashionController
+//                                                                     .toggleFavorite(
+//                                                                         imageIndex);
+//                                                               },
+//                                                               child: Image(
+//                                                                 image:
+//                                                                     AssetImage(
+//                                                                   fashionController
+//                                                                           .isFavouriteList[
+//                                                                               imageIndex]
+//                                                                           .value
+//                                                                       ? darkModeController
+//                                                                               .isLightTheme
+//                                                                               .value
+//                                                                           ? ImageConfig
+//                                                                               .favourite
+//                                                                           : ImageConfig
+//                                                                               .favouriteUnfill
+//                                                                       : darkModeController
+//                                                                               .isLightTheme
+//                                                                               .value
+//                                                                           ? ImageConfig
+//                                                                               .likeFill
+//                                                                           : ImageConfig
+//                                                                               .favouriteFill,
+//                                                                 ),
+//                                                                 width: SizeConfig
+//                                                                     .width18,
+//                                                               ),
+//                                                             ),
+//                                                           ),
+//                                                         ],
+//                                                       ),
+//                                                     ],
+//                                                   ),
+//                                                 ],
+//                                               ),
+//                                             ),
+//                                           );
+//                                         }
+//                                       }

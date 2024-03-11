@@ -10,6 +10,7 @@ import 'package:shoppers_ecommerce_flutter_ui_kit/controller/dark_mode_controlle
 import 'package:shoppers_ecommerce_flutter_ui_kit/controller/fashion_controller.dart';
 import 'package:shoppers_ecommerce_flutter_ui_kit/controller/home_controller.dart';
 import 'package:shoppers_ecommerce_flutter_ui_kit/controller/wishlist_controller.dart';
+import 'package:shoppers_ecommerce_flutter_ui_kit/model/product_model.dart';
 import 'package:shoppers_ecommerce_flutter_ui_kit/routes/app_routes.dart';
 
 import '../../config/colors.dart';
@@ -19,7 +20,7 @@ import '../../config/image.dart';
 import '../../config/size.dart';
 
 class FashionDetailsView extends StatelessWidget {
-  FashionDetailsView({Key? key}) : super(key: key);
+  FashionDetailsView({Key? key, required Products product}) : super(key: key);
 
   FashionController fashionController = Get.put(FashionController());
   HomeController homeController = Get.put(HomeController());
