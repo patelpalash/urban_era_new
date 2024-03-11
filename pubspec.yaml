@@ -40,6 +40,7 @@ flutter:
    - assets/images/
    - assets/fonts/
    - assets/flags/
+   - assets/admin_site_images/all final images with background removed/
 
   fonts:
     - family: Lexend_Light
