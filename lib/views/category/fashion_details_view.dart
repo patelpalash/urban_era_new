@@ -1,3 +1,4 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 // ignore_for_file: must_be_immutable
 
 import 'package:flutter/material.dart';
@@ -20,7 +21,12 @@ import '../../config/image.dart';
 import '../../config/size.dart';
 
 class FashionDetailsView extends StatelessWidget {
-  FashionDetailsView({Key? key, required Products product}) : super(key: key);
+  FashionDetailsView({
+    Key? key,
+    required this.product,
+  }) : super(key: key);
+
+  final Products product;
 
   FashionController fashionController = Get.put(FashionController());
   HomeController homeController = Get.put(HomeController());
@@ -141,7 +147,7 @@ class FashionDetailsView extends StatelessWidget {
                 child: Column(
                   children: [
                     SizedBox(
-                      height: SizeConfig.height280,
+                      height: 400,
                       child: PageView.builder(
                         controller: fashionController.pageFashionController,
                         onPageChanged: (value) {
@@ -156,21 +162,20 @@ class FashionDetailsView extends StatelessWidget {
                             ),
                             child: Container(
                               width: MediaQuery.of(context).size.width,
-                              height: SizeConfig.height280,
+                              height: SizeConfig.height303,
                               decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(
                                     SizeConfig.borderRadius14),
                                 color: darkModeController.isLightTheme.value
                                     ? ColorsConfig.secondaryColor
                                     : ColorsConfig.primaryColor,
+                                // color: Colors.amber,
                               ),
-                              child: const Padding(
-                                padding: EdgeInsets.only(
-                                  top: SizeConfig.padding08,
-                                ),
+                              child: Hero(
+                                tag: product.productid,
                                 child: Image(
                                   image: AssetImage(
-                                    ImageConfig.trendingP2,
+                                    'assets/admin_site_images/all final images with background removed/${product.img}',
                                   ),
                                   filterQuality: FilterQuality.high,
                                 ),
@@ -204,16 +209,20 @@ class FashionDetailsView extends StatelessWidget {
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              Text(
-                                TextString.mintJeansShirts,
-                                textAlign: TextAlign.center,
-                                style: TextStyle(
-                                  fontSize: FontSize.heading4,
-                                  fontFamily: FontFamily.lexendMedium,
-                                  fontWeight: FontWeight.w500,
-                                  color: darkModeController.isLightTheme.value
-                                      ? ColorsConfig.primaryColor
-                                      : ColorsConfig.secondaryColor,
+                              Container(
+                                width: 270,
+                                child: Text(
+                                  product.title,
+                                  maxLines: 2,
+                                  textAlign: TextAlign.start,
+                                  style: TextStyle(
+                                    fontSize: FontSize.heading4,
+                                    fontFamily: FontFamily.lexendMedium,
+                                    fontWeight: FontWeight.w500,
+                                    color: darkModeController.isLightTheme.value
+                                        ? ColorsConfig.primaryColor
+                                        : ColorsConfig.secondaryColor,
+                                  ),
                                 ),
                               ),
                               Row(
@@ -269,7 +278,7 @@ class FashionDetailsView extends StatelessWidget {
                           Row(
                             children: [
                               Text(
-                                TextString.mintShiner,
+                                product.subtitle,
                                 textAlign: TextAlign.center,
                                 style: TextStyle(
                                   fontSize: FontSize.body2,
@@ -283,18 +292,32 @@ class FashionDetailsView extends StatelessWidget {
                               const SizedBox(
                                 width: SizeConfig.width10,
                               ),
-                              Text(
-                                TextString.off50,
-                                textAlign: TextAlign.center,
-                                style: TextStyle(
-                                  fontSize: FontSize.body2,
-                                  fontFamily: FontFamily.lexendRegular,
-                                  fontWeight: FontWeight.w400,
-                                  color: darkModeController.isLightTheme.value
-                                      ? ColorsConfig.primaryColor
-                                      : ColorsConfig.secondaryColor,
+                              if (product.productid % 2 == 0)
+                                Text(
+                                  TextString.off50,
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                    fontSize: FontSize.body2,
+                                    fontFamily: FontFamily.lexendRegular,
+                                    fontWeight: FontWeight.w400,
+                                    color: darkModeController.isLightTheme.value
+                                        ? ColorsConfig.primaryColor
+                                        : ColorsConfig.secondaryColor,
+                                  ),
                                 ),
-                              ),
+                              if (product.productid % 2 != 0)
+                                Text(
+                                  "40% off",
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                    fontSize: FontSize.body2,
+                                    fontFamily: FontFamily.lexendRegular,
+                                    fontWeight: FontWeight.w400,
+                                    color: darkModeController.isLightTheme.value
+                                        ? ColorsConfig.primaryColor
+                                        : ColorsConfig.secondaryColor,
+                                  ),
+                                ),
                             ],
                           ),
                           const SizedBox(
@@ -304,7 +327,7 @@ class FashionDetailsView extends StatelessWidget {
                             child: Row(
                               children: [
                                 Text(
-                                  TextString.dollar790Only,
+                                  ('\u{20B9} ${product.price.toString()}'),
                                   style: TextStyle(
                                     fontSize: FontSize.heading4,
                                     fontFamily: FontFamily.lexendMedium,
@@ -318,7 +341,7 @@ class FashionDetailsView extends StatelessWidget {
                                   width: SizeConfig.width08,
                                 ),
                                 Text(
-                                  TextString.dollar1290,
+                                  ('\u{20B9} ${product.mrp.toString()}'),
                                   style: TextStyle(
                                     fontSize: FontSize.body2,
                                     fontFamily: FontFamily.lexendLight,
@@ -383,90 +406,90 @@ class FashionDetailsView extends StatelessWidget {
                               ],
                             ),
                           ),
-                          const SizedBox(
-                            height: SizeConfig.height24,
-                          ),
-                          Text(
-                            TextString.selectColor,
-                            style: TextStyle(
-                              fontSize: FontSize.body2,
-                              fontFamily: FontFamily.lexendMedium,
-                              fontWeight: FontWeight.w500,
-                              color: darkModeController.isLightTheme.value
-                                  ? ColorsConfig.primaryColor
-                                  : ColorsConfig.secondaryColor,
-                            ),
-                          ),
-                          const SizedBox(
-                            height: SizeConfig.height10,
-                          ),
-                          GridView.builder(
-                            padding: EdgeInsets.zero,
-                            gridDelegate:
-                                const SliverGridDelegateWithFixedCrossAxisCount(
-                              crossAxisCount: 7,
-                              mainAxisExtent: SizeConfig.height35,
-                            ),
-                            physics: const NeverScrollableScrollPhysics(),
-                            shrinkWrap: true,
-                            itemCount: fashionController.colorsList.length,
-                            itemBuilder: (context, index) {
-                              return GestureDetector(
-                                onTap: () {
-                                  fashionController.selectColor(index);
-                                },
-                                child: Obx(
-                                  () {
-                                    final isSelected = fashionController
-                                            .selectedColorIndex.value ==
-                                        index;
-                                    return Container(
-                                      width: SizeConfig.width45,
-                                      height: SizeConfig.height45,
-                                      decoration: BoxDecoration(
-                                        shape: BoxShape.circle,
-                                        color: isSelected
-                                            ? darkModeController
-                                                    .isLightTheme.value
-                                                ? ColorsConfig.secondaryColor
-                                                : ColorsConfig.primaryColor
-                                            : darkModeController
-                                                    .isLightTheme.value
-                                                ? ColorsConfig.secondaryColor
-                                                : Colors.transparent,
-                                        border: Border.all(
-                                          color: isSelected
-                                              ? darkModeController
-                                                      .isLightTheme.value
-                                                  ? ColorsConfig.textLightColor
-                                                  : ColorsConfig.secondaryColor
-                                              : darkModeController
-                                                      .isLightTheme.value
-                                                  ? Colors.transparent
-                                                  : Colors.transparent,
-                                        ),
-                                      ),
-                                      child: Center(
-                                        child: Padding(
-                                          padding: const EdgeInsets.all(
-                                            SizeConfig.padding04,
-                                          ),
-                                          child: Container(
-                                            width: SizeConfig.width35,
-                                            decoration: BoxDecoration(
-                                              color: fashionController
-                                                  .colorsList[index],
-                                              shape: BoxShape.circle,
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                    );
-                                  },
-                                ),
-                              );
-                            },
-                          ),
+                          // const SizedBox(
+                          //   height: SizeConfig.height24,
+                          // ),
+                          // Text(
+                          //   TextString.selectColor,
+                          //   style: TextStyle(
+                          //     fontSize: FontSize.body2,
+                          //     fontFamily: FontFamily.lexendMedium,
+                          //     fontWeight: FontWeight.w500,
+                          //     color: darkModeController.isLightTheme.value
+                          //         ? ColorsConfig.primaryColor
+                          //         : ColorsConfig.secondaryColor,
+                          //   ),
+                          // ),
+                          // const SizedBox(
+                          //   height: SizeConfig.height10,
+                          // ),
+                          // GridView.builder(
+                          //   padding: EdgeInsets.zero,
+                          //   gridDelegate:
+                          //       const SliverGridDelegateWithFixedCrossAxisCount(
+                          //     crossAxisCount: 7,
+                          //     mainAxisExtent: SizeConfig.height35,
+                          //   ),
+                          //   physics: const NeverScrollableScrollPhysics(),
+                          //   shrinkWrap: true,
+                          //   itemCount: fashionController.colorsList.length,
+                          //   itemBuilder: (context, index) {
+                          //     return GestureDetector(
+                          //       onTap: () {
+                          //         fashionController.selectColor(index);
+                          //       },
+                          //       child: Obx(
+                          //         () {
+                          //           final isSelected = fashionController
+                          //                   .selectedColorIndex.value ==
+                          //               index;
+                          //           return Container(
+                          //             width: SizeConfig.width45,
+                          //             height: SizeConfig.height45,
+                          //             decoration: BoxDecoration(
+                          //               shape: BoxShape.circle,
+                          //               color: isSelected
+                          //                   ? darkModeController
+                          //                           .isLightTheme.value
+                          //                       ? ColorsConfig.secondaryColor
+                          //                       : ColorsConfig.primaryColor
+                          //                   : darkModeController
+                          //                           .isLightTheme.value
+                          //                       ? ColorsConfig.secondaryColor
+                          //                       : Colors.transparent,
+                          //               border: Border.all(
+                          //                 color: isSelected
+                          //                     ? darkModeController
+                          //                             .isLightTheme.value
+                          //                         ? ColorsConfig.textLightColor
+                          //                         : ColorsConfig.secondaryColor
+                          //                     : darkModeController
+                          //                             .isLightTheme.value
+                          //                         ? Colors.transparent
+                          //                         : Colors.transparent,
+                          //               ),
+                          //             ),
+                          //             child: Center(
+                          //               child: Padding(
+                          //                 padding: const EdgeInsets.all(
+                          //                   SizeConfig.padding04,
+                          //                 ),
+                          //                 child: Container(
+                          //                   width: SizeConfig.width35,
+                          //                   decoration: BoxDecoration(
+                          //                     color: fashionController
+                          //                         .colorsList[index],
+                          //                     shape: BoxShape.circle,
+                          //                   ),
+                          //                 ),
+                          //               ),
+                          //             ),
+                          //           );
+                          //         },
+                          //       ),
+                          //     );
+                          //   },
+                          // ),
                           const SizedBox(
                             height: SizeConfig.height24,
                           ),

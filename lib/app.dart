@@ -7,6 +7,8 @@ import 'package:shoppers_ecommerce_flutter_ui_kit/controller/dark_mode_controlle
 import 'package:shoppers_ecommerce_flutter_ui_kit/routes/app_routes.dart';
 import 'package:shoppers_ecommerce_flutter_ui_kit/views/splash/splash_view.dart';
 
+import 'binding/bindingdata.dart';
+
 class ShoppersEcommerceApp extends StatelessWidget {
   ShoppersEcommerceApp({super.key}) {
     darkModeController.getThemeStatus();
@@ -23,6 +25,7 @@ class ShoppersEcommerceApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       themeMode: ThemeMode.system,
       home: SplashView(),
+      initialBinding: GeneralBindings(),
       getPages: AppRoutes.pages,
       title: "Shoppers Ecommerce UI",
     );

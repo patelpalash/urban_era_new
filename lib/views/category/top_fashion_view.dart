@@ -295,11 +295,15 @@ class _TopFashionViewState extends State<TopFashionView> {
                                                   CrossAxisAlignment.start,
                                               children: [
                                                 Center(
-                                                  child: Image(
-                                                    image: AssetImage(
-                                                        'assets/admin_site_images/all final images with background removed/${listofproducts[index].img}'),
-                                                    height: 190,
-                                                    width: 190,
+                                                  child: Hero(
+                                                    tag: listofproducts[index]
+                                                        .productid,
+                                                    child: Image(
+                                                      image: AssetImage(
+                                                          'assets/admin_site_images/all final images with background removed/${listofproducts[index].img}'),
+                                                      height: 190,
+                                                      width: 190,
+                                                    ),
                                                   ),
                                                 ),
                                                 Column(

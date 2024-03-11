@@ -101,206 +101,218 @@ class CategoryView extends StatelessWidget {
           ],
         ),
         body: Obx(() {
-          return Padding(
-            padding: const EdgeInsets.only(left: 24, right: 24, bottom: 15),
-            child: ListView.builder(
-                shrinkWrap: true,
-                physics: const BouncingScrollPhysics(),
-                itemCount: categorycontroller.category.length,
-                itemBuilder: (context, index) {
-                  return Padding(
-                    padding: const EdgeInsets.only(top: 28),
-                    child: GestureDetector(
-                      onTap: () {
-                        detailscreen(
-                            context, categorycontroller.category[index]);
-                      },
-                      child: Stack(
-                        children: [
-                          Container(
-                            height: 104,
-                            width: double.infinity,
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(14),
-                              color: Colors.transparent,
-                            ),
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.end,
-                              children: [
-                                if (index % 2 == 0)
-                                  Container(
-                                    alignment: Alignment.centerRight,
-                                    width: double.infinity,
-                                    height: 96,
-                                    padding: const EdgeInsets.only(
-                                      left: 100,
-                                      right: 12,
-                                    ),
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(14),
-                                      // color: Colors.black45,
-                                      color:
-                                          darkModeController.isLightTheme.value
-                                              ? ColorsConfig.secondaryColor
-                                              : ColorsConfig.primaryColor,
-                                    ),
-                                    child: Container(
-                                      width: 205,
-                                      margin: const EdgeInsets.only(
-                                        left: 18,
-                                      ),
-                                      child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
-                                        children: [
-                                          Text(
-                                            categorycontroller
-                                                .category[index].title,
-                                            style: TextStyle(
-                                              fontSize: 18,
-                                              fontFamily:
-                                                  FontFamily.lexendMedium,
-                                              // fontSize: FontSize.heading4,
-                                              // fontFamily: FontFamily.lexendMedium,
-                                              fontWeight: FontWeight.w500,
-                                              color: darkModeController
-                                                      .isLightTheme.value
-                                                  ? ColorsConfig.primaryColor
-                                                  : ColorsConfig.secondaryColor,
-                                            ),
-                                          ),
-                                          const SizedBox(
-                                            height: 4,
-                                            // height: SizeConfig.height04,
-                                          ),
-                                          Text(
-                                            categorycontroller
-                                                .category[index].subtitle,
-                                            style: TextStyle(
-                                              fontSize: 15,
-                                              fontFamily:
-                                                  FontFamily.lexendLight,
-                                              fontWeight: FontWeight.w300,
-                                              color: darkModeController
-                                                      .isLightTheme.value
-                                                  ? ColorsConfig.textColor
-                                                  : ColorsConfig
-                                                      .modeInactiveColor,
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  ),
-                                if (index % 2 != 0)
-                                  Container(
-                                    alignment: Alignment.centerLeft,
-                                    width: double.infinity,
-                                    height: 96,
-                                    padding: const EdgeInsets.only(
-                                      left: 12,
-                                      right: 12,
-                                    ),
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(14),
-                                      // color: Colors.black45,
-                                      color:
-                                          darkModeController.isLightTheme.value
-                                              ? ColorsConfig.secondaryColor
-                                              : ColorsConfig.primaryColor,
-                                    ),
-                                    child: Container(
-                                      width: 187,
-                                      margin: const EdgeInsets.only(
-                                        right: 18,
-                                        left: 18,
-                                      ),
-                                      child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
-                                        children: [
-                                          Text(
-                                            categorycontroller
-                                                .category[index].title,
-                                            style: TextStyle(
-                                              fontSize: 18,
-                                              fontFamily:
-                                                  FontFamily.lexendMedium,
-                                              // fontSize: FontSize.heading4,
-                                              // fontFamily: FontFamily.lexendMedium,
-                                              fontWeight: FontWeight.w500,
-                                              color: darkModeController
-                                                      .isLightTheme.value
-                                                  ? ColorsConfig.primaryColor
-                                                  : ColorsConfig.secondaryColor,
-                                            ),
-                                          ),
-                                          const SizedBox(
-                                            height: 4,
-                                            // height: SizeConfig.height04,
-                                          ),
-                                          Text(
-                                            categorycontroller
-                                                .category[index].subtitle,
-                                            style: TextStyle(
-                                              fontSize: 15,
-                                              fontFamily:
-                                                  FontFamily.lexendLight,
-                                              fontWeight: FontWeight.w300,
-                                              color: darkModeController
-                                                      .isLightTheme.value
-                                                  ? ColorsConfig.textColor
-                                                  : ColorsConfig
-                                                      .modeInactiveColor,
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  ),
-                              ],
-                            ),
-                          ),
-                          if (index % 2 == 0)
-                            Padding(
-                              padding: const EdgeInsets.only(
-                                left: 12,
+          if (categorycontroller.isLoading.value) {
+            return Center(
+              child: CircularProgressIndicator(
+                color: darkModeController.isLightTheme.value
+                    ? ColorsConfig.primaryColor
+                    : ColorsConfig.secondaryColor,
+              ),
+            );
+          } else {
+            return Padding(
+              padding: const EdgeInsets.only(left: 24, right: 24, bottom: 15),
+              child: ListView.builder(
+                  shrinkWrap: true,
+                  physics: const BouncingScrollPhysics(),
+                  itemCount: categorycontroller.category.length,
+                  itemBuilder: (context, index) {
+                    return Padding(
+                      padding: const EdgeInsets.only(top: 28),
+                      child: GestureDetector(
+                        onTap: () {
+                          detailscreen(
+                              context, categorycontroller.category[index]);
+                        },
+                        child: Stack(
+                          children: [
+                            Container(
+                              height: 104,
+                              width: double.infinity,
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(14),
+                                color: Colors.transparent,
                               ),
-                              child: Align(
-                                alignment: Alignment.centerLeft,
-                                child: Image(
-                                  image:
-                                      AssetImage("assets/images/c${index}.png"),
-                                  height: 104,
-                                  width: 98,
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.end,
+                                children: [
+                                  if (index % 2 == 0)
+                                    Container(
+                                      alignment: Alignment.centerRight,
+                                      width: double.infinity,
+                                      height: 96,
+                                      padding: const EdgeInsets.only(
+                                        left: 100,
+                                        right: 12,
+                                      ),
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(14),
+                                        // color: Colors.black45,
+                                        color: darkModeController
+                                                .isLightTheme.value
+                                            ? ColorsConfig.secondaryColor
+                                            : ColorsConfig.primaryColor,
+                                      ),
+                                      child: Container(
+                                        width: 205,
+                                        margin: const EdgeInsets.only(
+                                          left: 18,
+                                        ),
+                                        child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          children: [
+                                            Text(
+                                              categorycontroller
+                                                  .category[index].title,
+                                              style: TextStyle(
+                                                fontSize: 18,
+                                                fontFamily:
+                                                    FontFamily.lexendMedium,
+                                                // fontSize: FontSize.heading4,
+                                                // fontFamily: FontFamily.lexendMedium,
+                                                fontWeight: FontWeight.w500,
+                                                color: darkModeController
+                                                        .isLightTheme.value
+                                                    ? ColorsConfig.primaryColor
+                                                    : ColorsConfig
+                                                        .secondaryColor,
+                                              ),
+                                            ),
+                                            const SizedBox(
+                                              height: 4,
+                                              // height: SizeConfig.height04,
+                                            ),
+                                            Text(
+                                              categorycontroller
+                                                  .category[index].subtitle,
+                                              style: TextStyle(
+                                                fontSize: 15,
+                                                fontFamily:
+                                                    FontFamily.lexendLight,
+                                                fontWeight: FontWeight.w300,
+                                                color: darkModeController
+                                                        .isLightTheme.value
+                                                    ? ColorsConfig.textColor
+                                                    : ColorsConfig
+                                                        .modeInactiveColor,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                  if (index % 2 != 0)
+                                    Container(
+                                      alignment: Alignment.centerLeft,
+                                      width: double.infinity,
+                                      height: 96,
+                                      padding: const EdgeInsets.only(
+                                        left: 12,
+                                        right: 12,
+                                      ),
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(14),
+                                        // color: Colors.black45,
+                                        color: darkModeController
+                                                .isLightTheme.value
+                                            ? ColorsConfig.secondaryColor
+                                            : ColorsConfig.primaryColor,
+                                      ),
+                                      child: Container(
+                                        width: 187,
+                                        margin: const EdgeInsets.only(
+                                          right: 18,
+                                          left: 18,
+                                        ),
+                                        child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          children: [
+                                            Text(
+                                              categorycontroller
+                                                  .category[index].title,
+                                              style: TextStyle(
+                                                fontSize: 18,
+                                                fontFamily:
+                                                    FontFamily.lexendMedium,
+                                                // fontSize: FontSize.heading4,
+                                                // fontFamily: FontFamily.lexendMedium,
+                                                fontWeight: FontWeight.w500,
+                                                color: darkModeController
+                                                        .isLightTheme.value
+                                                    ? ColorsConfig.primaryColor
+                                                    : ColorsConfig
+                                                        .secondaryColor,
+                                              ),
+                                            ),
+                                            const SizedBox(
+                                              height: 4,
+                                              // height: SizeConfig.height04,
+                                            ),
+                                            Text(
+                                              categorycontroller
+                                                  .category[index].subtitle,
+                                              style: TextStyle(
+                                                fontSize: 15,
+                                                fontFamily:
+                                                    FontFamily.lexendLight,
+                                                fontWeight: FontWeight.w300,
+                                                color: darkModeController
+                                                        .isLightTheme.value
+                                                    ? ColorsConfig.textColor
+                                                    : ColorsConfig
+                                                        .modeInactiveColor,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                ],
+                              ),
+                            ),
+                            if (index % 2 == 0)
+                              Padding(
+                                padding: const EdgeInsets.only(
+                                  left: 12,
+                                ),
+                                child: Align(
+                                  alignment: Alignment.centerLeft,
+                                  child: Image(
+                                    image: AssetImage(
+                                        "assets/images/c${index}.png"),
+                                    height: 104,
+                                    width: 98,
+                                  ),
                                 ),
                               ),
-                            ),
-                          if (index % 2 != 0)
-                            Padding(
-                              padding: const EdgeInsets.only(
-                                right: 12,
-                              ),
-                              child: Align(
-                                alignment: Alignment.centerRight,
-                                child: Image(
-                                  image:
-                                      AssetImage("assets/images/c${index}.png"),
-                                  height: 104,
-                                  width: 98,
+                            if (index % 2 != 0)
+                              Padding(
+                                padding: const EdgeInsets.only(
+                                  right: 12,
+                                ),
+                                child: Align(
+                                  alignment: Alignment.centerRight,
+                                  child: Image(
+                                    image: AssetImage(
+                                        "assets/images/c${index}.png"),
+                                    height: 104,
+                                    width: 98,
+                                  ),
                                 ),
                               ),
-                            ),
-                        ],
+                          ],
+                        ),
                       ),
-                    ),
-                  );
-                }),
-          );
+                    );
+                  }),
+            );
+          }
         }),
       ),
     );
